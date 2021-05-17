@@ -1,7 +1,8 @@
+const { findBy } = require("../jokes/jokes-model")
 const { JWT_SECRET } = require("../secrets");
 const jwt = require("jsonwebtoken")
 
-module.exports = () => {
+const restricted = () => {
   return async (req, res, next) => {
     try {
       // 2- On missing token in the Authorization header,
@@ -9,7 +10,7 @@ module.exports = () => {
       const token = req.cookies.token
       if(!token){
         return res.status(401).json({
-          message: "Token required"
+          message: "token required"
         })
       }
 
@@ -18,7 +19,7 @@ module.exports = () => {
       jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if(err) {
           return res.status(401).json({
-            message: "Token invalid"
+            message: "token invalid"
           })
         }
 
@@ -32,4 +33,43 @@ module.exports = () => {
         next(err)
     }
   }
+}
+
+const required = () => {
+  return async (req, res, next) => {
+    try {
+      const { username, password } = req.body
+
+      if(!username || !password){
+        res.status(401).json({
+          message: "username and password required"
+        })
+      }
+    } catch(err){
+        next(err)
+    }
+  }
+}
+
+const checkUsernameExists = () => {
+  return async (req, res, next) => {
+    try {
+      const { username, password } = req.body
+
+      const user = await findBy({ username })
+      if(user) {
+        res.status(401).json({
+          message: "username taken"
+        })
+      }
+    } catch(err){
+        next(err)
+    }
+  }
+}
+
+module.exports = {
+  restricted,
+  required,
+  checkUsernameExists
 }

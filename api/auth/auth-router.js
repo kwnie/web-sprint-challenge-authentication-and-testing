@@ -23,7 +23,7 @@ router.post('/register', required(), checkUsernameExists(), async (req, res, nex
 router.post('/login', async (req, res, next) => {
     try {
 	    const { username, password } = req.body
-        
+
         // if username not in database
 	    const user = await findBy(username)
 		    if (!user) {
@@ -31,8 +31,9 @@ router.post('/login', async (req, res, next) => {
 				    message: "invalid credentials",
 			    })
 		    }
-			console.log(process.env)
+
         const passwordValid = await bcrypt.compare(password, user.password)
+		console.log(passwordValid)
 		    if (!passwordValid) {
 			    return res.status(401).json({
 				    message: "invalid credentials",

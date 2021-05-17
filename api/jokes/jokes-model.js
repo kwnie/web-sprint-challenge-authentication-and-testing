@@ -7,9 +7,8 @@ const add = async (user) => {
 
 const findBy = async (username) => {
 	return await db("users")
-		.where({
-			username: username
-	  })
+		.where({ username })
+		.first()
 }
 
 module.exports = {

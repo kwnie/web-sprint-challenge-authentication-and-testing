@@ -45,6 +45,8 @@ const required = () => {
           message: "username and password required"
         })
       }
+
+      next()
     } catch(err){
         next(err)
     }
@@ -54,7 +56,7 @@ const required = () => {
 const checkUsernameExists = () => {
   return async (req, res, next) => {
     try {
-      const { username, password } = req.body
+      const { username } = req.body
 
       const user = await findBy({ username })
       if(user) {
@@ -62,6 +64,8 @@ const checkUsernameExists = () => {
           message: "username taken"
         })
       }
+
+      next()
     } catch(err){
         next(err)
     }
